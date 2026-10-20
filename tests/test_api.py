@@ -76,7 +76,7 @@ async def test_create_and_fetch_requisition(client: AsyncClient):
 async def test_requisition_approval_workflow(client: AsyncClient):
     # 1. Create requisition
     create_payload = {
-        "title": "Zycus AI Sourcing License Renewal",
+        "title": "TechCorp AI Sourcing License Renewal",
         "requester_name": "Jane Doe",
         "requester_email": "jane@example.com",
         "department": "Procurement",
@@ -84,11 +84,11 @@ async def test_requisition_approval_workflow(client: AsyncClient):
         "priority": "URGENT",
         "line_items": [
             {
-                "item_description": "Zycus Cognitive Sourcing Enterprise Tier",
+                "item_description": "Enterprise Sourcing Enterprise Tier",
                 "category": "Software Licenses",
                 "quantity": 1,
                 "unit_price": 12000.0,
-                "supplier_name": "Zycus Infotech",
+                "supplier_name": "Acme Corp",
             }
         ],
     }

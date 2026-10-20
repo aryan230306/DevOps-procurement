@@ -1,7 +1,7 @@
 .PHONY: help setup test lint run up down status smoke load chaos gameday backup restore clean
 
 help:
-	@echo "Zycus ProcurePulse — Enterprise SRE & Procurement Requisition Service"
+	@echo "ProcurePulse — Enterprise SRE & Procurement Requisition Service"
 	@echo "Available commands:"
 	@echo "  make setup     - Create virtual environment and install dependencies"
 	@echo "  make test      - Run full pytest test suite"

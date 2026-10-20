@@ -1,9 +1,9 @@
-# Zycus ProcurePulse — System Architecture & Reliability Engineering
+# ProcurePulse — System Architecture & Reliability Engineering
 
 ## 1. System Overview
-**Zycus ProcurePulse** is an enterprise-grade Procurement Requisition and Purchase Order lifecycle service built with **FastAPI**, **PostgreSQL**, and an end-to-end **SRE Observability & Chaos Engineering** stack.
+**ProcurePulse** is an enterprise-grade Procurement Requisition and Purchase Order lifecycle service built with **FastAPI**, **PostgreSQL**, and an end-to-end **SRE Observability & Chaos Engineering** stack.
 
-Designed specifically around the domain problems solved by **Zycus** (Cognitive Procurement & Spend Management), ProcurePulse models realistic enterprise procurement workflows (requisition drafting, line item aggregation, budget validation, multi-tier approvals, spend analytics) while upholding strict **99.9% 30-Day Availability Service Level Objectives (SLOs)**.
+Designed specifically around the domain problems solved by enterprise procurement SaaS platforms, ProcurePulse models realistic enterprise procurement workflows (requisition drafting, line item aggregation, budget validation, multi-tier approvals, spend analytics) while upholding strict **99.9% 30-Day Availability Service Level Objectives (SLOs)**.
 
 ---
 

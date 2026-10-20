@@ -1,4 +1,4 @@
-"""In-process Chaos Engineering Engine for Zycus ProcurePulse.
+"""In-process Chaos Engineering Engine for ProcurePulse.
 
 Allows SRE teams to safely simulate real-world production outages:
 - Upstream latency spikes

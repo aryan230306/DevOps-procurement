@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""CLI utility for injecting and managing runtime chaos experiments in Zycus ProcurePulse."""
+"""CLI utility for injecting and managing runtime chaos experiments in ProcurePulse."""
 
 import argparse
 import json
@@ -26,7 +26,7 @@ def send_request(base_url: str, method: str, path: str, payload: dict = None):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Zycus ProcurePulse Chaos Engineering Controller",
+        description="ProcurePulse Chaos Engineering Controller",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(

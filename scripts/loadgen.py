@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Realistic procurement traffic and load generator for Zycus ProcurePulse."""
+"""Realistic procurement traffic and load generator for ProcurePulse."""
 
 import argparse
 import json
@@ -14,7 +14,7 @@ CATEGORIES = ["Software Licenses", "Cloud Infrastructure", "Hardware", "Consulti
 SUPPLIERS = [
     "Amazon Web Services",
     "Microsoft Azure",
-    "Zycus Cognitive AI",
+    "TechCorp Cognitive AI",
     "Salesforce Inc.",
     "Apple Enterprise",
     "Gartner Advisory",
@@ -112,7 +112,7 @@ def simulate_procurement_user(base_url: str):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Zycus ProcurePulse Realistic Load Generator")
+    parser = argparse.ArgumentParser(description="ProcurePulse Realistic Load Generator")
     parser.add_argument("--url", default="http://localhost:8000", help="Target API URL")
     parser.add_argument("--concurrency", type=int, default=5, help="Concurrent client workers")
     parser.add_argument("--duration", type=int, default=0, help="Run duration in seconds (0 = infinite)")

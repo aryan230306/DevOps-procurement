@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# Zycus ProcurePulse Verified Database Restore Script
+# ProcurePulse Verified Database Restore Script
 # ==============================================================================
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

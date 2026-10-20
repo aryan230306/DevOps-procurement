@@ -1,11 +1,11 @@
-"""Mission Control UI for Zycus ProcurePulse."""
+"""Mission Control UI for ProcurePulse."""
 
 DASHBOARD_HTML = """<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Zycus ProcurePulse — Enterprise SRE & Procurement Mission Control</title>
+  <title>ProcurePulse — Enterprise SRE & Procurement Mission Control</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -562,7 +562,7 @@ DASHBOARD_HTML = """<!DOCTYPE html>
             LIVE SRE TELEMETRY & EVENT LOG
           </div>
           <div class="console" id="console-logs">
-            <div class="console-line">[SYSTEM] Zycus ProcurePulse Mission Control initialized.</div>
+            <div class="console-line">[SYSTEM] ProcurePulse Mission Control initialized.</div>
           </div>
         </div>
       </div>
@@ -574,7 +574,7 @@ DASHBOARD_HTML = """<!DOCTYPE html>
   <div id="toast"></div>
 
   <footer>
-    Zycus ProcurePulse • Enterprise SRE & Procurement Platform • Built by Aryan
+    ProcurePulse • Enterprise SRE & Procurement Platform • Designed & Built by Aryan
   </footer>
 
   <script>
@@ -694,7 +694,7 @@ DASHBOARD_HTML = """<!DOCTYPE html>
 
     async function generateDemoRequisition() {
       const depts = ['Engineering', 'Procurement', 'Finance', 'IT Operations', 'Marketing'];
-      const suppliers = ['Amazon Web Services', 'Zycus Cognitive AI', 'Salesforce Inc.', 'Apple Enterprise', 'Datadog'];
+      const suppliers = ['Amazon Web Services', 'Anthropic Claude Enterprise', 'Salesforce Inc.', 'Apple Enterprise', 'Datadog'];
       const chosenDept = depts[Math.floor(Math.random() * depts.length)];
       const chosenSupp = suppliers[Math.floor(Math.random() * suppliers.length)];
       const qty = Math.floor(Math.random() * 5) + 1;
@@ -704,7 +704,7 @@ DASHBOARD_HTML = """<!DOCTYPE html>
         title: `Enterprise Cloud & Software License for ${chosenDept}`,
         description: `Automated demonstration requisition generated from Mission Control`,
         requester_name: 'Aryan Admin',
-        requester_email: 'aryan@zycus.com',
+        requester_email: 'aryan@procurepulse.io',
         department: chosenDept,
         currency: 'USD',
         priority: 'HIGH',

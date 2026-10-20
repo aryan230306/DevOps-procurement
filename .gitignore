@@ -31,3 +31,4 @@ backups/*.sql.gz*
 htmlcov/
 .ruff_cache/
 .mypy_cache/
+test.db

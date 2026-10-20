@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# Zycus ProcurePulse Environment Initializer
+# ProcurePulse Environment Initializer
 # ==============================================================================
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -8,7 +8,7 @@ PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 source "${SCRIPT_DIR}/lib.sh"
 
-log_step "Initializing Zycus ProcurePulse Environment"
+log_step "Initializing ProcurePulse Environment"
 
 ENV_FILE="${PROJECT_ROOT}/.env"
 ENV_EXAMPLE="${PROJECT_ROOT}/.env.example"

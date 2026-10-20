@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# Zycus ProcurePulse Container Image Builder
+# ProcurePulse Container Image Builder
 # ==============================================================================
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -11,7 +11,7 @@ source "${SCRIPT_DIR}/lib.sh"
 TAG="${1:-latest}"
 IMAGE_NAME="zycus/procurepulse"
 
-log_step "Building Zycus ProcurePulse Container Image [${IMAGE_NAME}:${TAG}]"
+log_step "Building ProcurePulse Container Image [${IMAGE_NAME}:${TAG}]"
 
 require_cmd docker
 

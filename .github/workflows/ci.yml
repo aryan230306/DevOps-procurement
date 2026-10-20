@@ -1,4 +1,4 @@
-name: Zycus ProcurePulse CI/CD Pipeline
+name: ProcurePulse CI/CD Pipeline
 
 on:
   push:

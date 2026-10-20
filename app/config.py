@@ -6,7 +6,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    APP_NAME: str = "ZycusProcurePulse"
+    APP_NAME: str = "ProcurePulse"
     APP_ENV: str = "development"
     DEBUG: bool = False
     HOST: str = "0.0.0.0"
@@ -25,7 +25,7 @@ class Settings(BaseSettings):
     DB_POOL_RECYCLE: int = 1800
 
     # Security
-    SECRET_KEY: str = "zycus-super-secret-key-change-in-production-min32chars"
+    SECRET_KEY: str = "procurepulse-super-secret-key-change-in-production-min32chars"
 
     # Chaos & Observability
     CHAOS_ENABLED: bool = True

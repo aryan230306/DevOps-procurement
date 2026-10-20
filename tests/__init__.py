@@ -1,1 +1,1 @@
-"""Test suite for Zycus ProcurePulse."""
+"""Test suite for ProcurePulse."""

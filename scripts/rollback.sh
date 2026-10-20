@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# Zycus ProcurePulse Automated Rollback Script
+# ProcurePulse Automated Rollback Script
 # ==============================================================================
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -8,7 +8,7 @@ PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 source "${SCRIPT_DIR}/lib.sh"
 
-log_step "Initiating Emergency Rollback for Zycus ProcurePulse"
+log_step "Initiating Emergency Rollback for ProcurePulse"
 
 cd "${PROJECT_ROOT}"
 

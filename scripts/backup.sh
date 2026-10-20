@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# Zycus ProcurePulse Automated PostgreSQL Backup Script
+# ProcurePulse Automated PostgreSQL Backup Script
 # ==============================================================================
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

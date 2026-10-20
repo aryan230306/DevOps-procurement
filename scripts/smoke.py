@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Rapid end-to-end smoke test for Zycus ProcurePulse."""
+"""Rapid end-to-end smoke test for ProcurePulse."""
 
 import json
 import sys

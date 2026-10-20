@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# Zycus ProcurePulse SRE Common Shell Library
+# ProcurePulse SRE Common Shell Library
 # ==============================================================================
 
 set -euo pipefail

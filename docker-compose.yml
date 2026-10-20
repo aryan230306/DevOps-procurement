@@ -46,7 +46,7 @@ services:
     networks:
       - procurepulse_net
     environment:
-      APP_NAME: "ZycusProcurePulse"
+      APP_NAME: "ProcurePulse"
       APP_ENV: "production"
       DATABASE_URL: "postgresql+asyncpg://${POSTGRES_USER:-zycus_user}:${POSTGRES_PASSWORD:-zycus_secure_pass_2026}@db:5432/${POSTGRES_DB:-procurepulse}"
       CHAOS_ENABLED: "true"

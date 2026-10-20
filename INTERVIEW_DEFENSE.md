@@ -1,18 +1,18 @@
-# Interview Defense Guide: Zycus ProcurePulse
+# Interview Defense Guide: ProcurePulse
 
-This document equips you with comprehensive, highly defensible answers to technical, architectural, and SRE questions during an interview at **Zycus** or any top-tier enterprise platform engineering company.
+This document equips you with comprehensive, highly defensible answers to technical, architectural, and SRE questions during an interview at a target company or any top-tier enterprise platform engineering company.
 
 ---
 
 ## 1. The 60-Second Elevator Pitch
-> *"I built **Zycus ProcurePulse**, an enterprise procurement requisition and purchase order lifecycle service designed around the core business domains Zycus handles—purchase requisitions, spend analysis, approval hierarchies, and budget compliance. Rather than just building a CRUD API, I treated it as a mission-critical financial backend: implementing strict ACID transaction semantics, Google SRE Multi-Window Multi-Burn-Rate alerting against a 99.9% 30-day availability SLO, an in-process chaos engineering engine for automated Game Days, and a zero-downtime deployment pipeline with automated rollback."*
+> *"I built **ProcurePulse**, an enterprise procurement requisition and purchase order lifecycle service designed around the core business domains ProcurePulse handles—purchase requisitions, spend analysis, approval hierarchies, and budget compliance. Rather than just building a CRUD API, I treated it as a mission-critical financial backend: implementing strict ACID transaction semantics, Google SRE Multi-Window Multi-Burn-Rate alerting against a 99.9% 30-day availability SLO, an in-process chaos engineering engine for automated Game Days, and a zero-downtime deployment pipeline with automated rollback."*
 
 ---
 
-## 2. Domain & Company Alignment (Why Zycus?)
+## 2. Domain & Company Alignment (Why This Project?)
 **Q: Why choose the Procurement Requisition domain instead of a generic e-commerce store or blog engine?**
 - **Answer**: 
-  - *"In B2B enterprise SaaS like Zycus's Cognitive Sourcing and Procure-to-Pay suites, procurement workflows are mission-critical. Requisitions represent legally binding financial commitments with multi-tiered approval policies, department budget allocations, and compliance audit trails.*
+  - *"In B2B enterprise SaaS like Enterprise Cognitive Sourcing and Procure-to-Pay suites, procurement workflows are mission-critical. Requisitions represent legally binding financial commitments with multi-tiered approval policies, department budget allocations, and compliance audit trails.*
   - *Generic CRUD apps don't handle state machines (Draft -> Submitted -> Approved/Rejected -> Ordered), line item price rollups, or spend aggregation by department. By building directly in this domain, I demonstrate that I understand enterprise data modeling, business compliance, and how system reliability directly impacts our customer's procurement operations."*
 
 ---

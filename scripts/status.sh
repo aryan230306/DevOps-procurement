@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# Zycus ProcurePulse Real-Time Health & Status CLI
+# ProcurePulse Real-Time Health & Status CLI
 # ==============================================================================
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -8,7 +8,7 @@ PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 source "${SCRIPT_DIR}/lib.sh"
 
-log_step "Zycus ProcurePulse Production Status Overview"
+log_step "ProcurePulse Production Status Overview"
 
 cd "${PROJECT_ROOT}"
 

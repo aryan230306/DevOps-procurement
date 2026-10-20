@@ -1,4 +1,4 @@
-# ⚡ Zycus ProcurePulse
+# ⚡ ProcurePulse
 
 > **Enterprise Procurement Requisition Service with SRE Observability, Google Multi-Window SLO Burn-Rate Alerting, Chaos Engineering & Automated Rollbacks.**
 
@@ -14,7 +14,7 @@
 
 ## 📌 Executive Summary
 
-**Zycus ProcurePulse** is an enterprise-grade backend service built to model the exact mission-critical problems handled by **Zycus**—enterprise procurement requisition lifecycle, multi-tier approval policies, spend analytics, and budget guardrails—while engineering a production-ready **Site Reliability Engineering (SRE)** platform around it.
+**ProcurePulse** is an enterprise-grade backend service built to model the exact mission-critical problems handled by enterprise procurement platforms—enterprise procurement requisition lifecycle, multi-tier approval policies, spend analytics, and budget guardrails—while engineering a production-ready **Site Reliability Engineering (SRE)** platform around it.
 
 It features:
 - **Core Domain Service**: FastAPI + PostgreSQL (AsyncPG) handling purchase requisitions (PR), line item budget aggregations, department spend analytics, and status state machines.
@@ -154,7 +154,7 @@ All operational scripts are located in `scripts/`:
 ## 📚 Interview & Architectural Documentation
 
 - 📖 **[ARCHITECTURE.md](ARCHITECTURE.md)**: Deep technical architecture, component interactions, and PromQL recording rules.
-- 🎯 **[INTERVIEW_DEFENSE.md](INTERVIEW_DEFENSE.md)**: 20+ interview defense questions, technical trade-offs, and company alignment points for Zycus.
+- 🎯 **[INTERVIEW_DEFENSE.md](INTERVIEW_DEFENSE.md)**: 20+ interview defense questions, technical trade-offs, and company alignment points for any enterprise platform company.
 - 🚨 **[SRE Runbooks](runbooks/)**:
   - [HighErrorRateSLOBurn.md](runbooks/HighErrorRateSLOBurn.md)
   - [DatabaseConnectionExhausted.md](runbooks/DatabaseConnectionExhausted.md)

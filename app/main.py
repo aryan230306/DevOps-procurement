@@ -1,4 +1,4 @@
-"""Zycus ProcurePulse FastAPI Application Entrypoint."""
+"""ProcurePulse FastAPI Application Entrypoint."""
 
 import logging
 import time

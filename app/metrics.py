@@ -1,4 +1,4 @@
-"""Prometheus metrics instrumentation for Zycus ProcurePulse.
+"""Prometheus metrics instrumentation for ProcurePulse.
 
 Exposes standard RED metrics (Rate, Errors, Duration), database pool stats,
 procurement domain business KPIs, and chaos testing telemetry.
@@ -37,7 +37,7 @@ HTTP_REQUESTS_IN_FLIGHT = Gauge(
 )
 
 # ---------------------------------------------------------
-# Procurement Domain Business KPIs (Zycus Core Domain)
+# Procurement Domain Business KPIs
 # ---------------------------------------------------------
 REQUISITIONS_CREATED_TOTAL = Counter(
     "procurement_requisitions_created_total",

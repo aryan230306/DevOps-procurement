@@ -262,7 +262,7 @@
       "collapsed": false,
       "gridPos": { "h": 1, "w": 24, "x": 0, "y": 16 },
       "id": 102,
-      "title": "💼 Zycus Procurement Domain KPIs",
+      "title": "💼 Enterprise Procurement Domain KPIs",
       "type": "row"
     },
     {
@@ -322,7 +322,7 @@
     "refresh_intervals": ["5s", "10s", "30s", "1m"]
   },
   "timezone": "browser",
-  "title": "Zycus ProcurePulse — Enterprise SRE & Business Dashboard",
+  "title": "ProcurePulse — Enterprise SRE & Business Dashboard",
   "uid": "procurepulse-sre",
   "version": 1
 }

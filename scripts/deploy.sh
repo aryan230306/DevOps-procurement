@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# Zycus ProcurePulse Zero-Downtime Deployment Script
+# ProcurePulse Zero-Downtime Deployment Script
 # ==============================================================================
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -8,7 +8,7 @@ PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 source "${SCRIPT_DIR}/lib.sh"
 
-log_step "Starting Deployment for Zycus ProcurePulse"
+log_step "Starting Deployment for ProcurePulse"
 
 require_cmd docker
 require_cmd curl
