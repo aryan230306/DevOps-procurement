@@ -63,14 +63,40 @@ jobs:
           context: .
           file: ./Dockerfile
           push: false
-          tags: zycus/procurepulse:test
+          tags: procurepulse/app:test
           load: true
 
       - name: Scan Image for Vulnerabilities with Trivy
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'zycus/procurepulse:test'
+          image-ref: 'procurepulse/app:test'
           format: 'table'
           exit-code: '0'
           ignore-unfixed: true
           severity: 'CRITICAL,HIGH'
+
+  # ============================================================================
+  # 3. Deploy to EC2 (runs only on push to main, requires GitHub Secrets)
+  # Set: EC2_HOST, EC2_USER (ubuntu), EC2_SSH_KEY in repo Settings → Secrets
+  # ============================================================================
+  deploy:
+    needs: build-and-scan
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Deploy to EC2 via SSH
+        # This step is skipped if secrets are not configured — safe for forks
+        if: ${{ secrets.EC2_HOST != '' }}
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+            cd ~/DevOps-procurement
+            git pull origin main
+            docker compose pull --quiet
+            docker compose up -d --build --remove-orphans
+            docker compose ps
+            echo "✅ Deployment complete"

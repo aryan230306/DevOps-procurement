@@ -20,15 +20,15 @@ services:
     networks:
       - procurepulse_net
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-zycus_user}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-zycus_secure_pass_2026}
+      POSTGRES_USER: ${POSTGRES_USER:-procure_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-procure_secure_2026}
       POSTGRES_DB: ${POSTGRES_DB:-procurepulse}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-zycus_user} -d ${POSTGRES_DB:-procurepulse}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-procure_user} -d ${POSTGRES_DB:-procurepulse}"]
       interval: 5s
       timeout: 3s
       retries: 5
@@ -48,7 +48,7 @@ services:
     environment:
       APP_NAME: "ProcurePulse"
       APP_ENV: "production"
-      DATABASE_URL: "postgresql+asyncpg://${POSTGRES_USER:-zycus_user}:${POSTGRES_PASSWORD:-zycus_secure_pass_2026}@db:5432/${POSTGRES_DB:-procurepulse}"
+      DATABASE_URL: "postgresql+asyncpg://${POSTGRES_USER:-procure_user}:${POSTGRES_PASSWORD:-procure_secure_2026}@db:5432/${POSTGRES_DB:-procurepulse}"
       CHAOS_ENABLED: "true"
       METRICS_ENABLED: "true"
     ports:
