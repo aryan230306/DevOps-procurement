@@ -6,6 +6,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse, JSONResponse
 
 from app import __version__
 from app.api.analytics import router as analytics_router
@@ -20,6 +21,7 @@ from app.metrics import (
     HTTP_REQUESTS_TOTAL,
     get_metrics_payload,
 )
+from app.ui import DASHBOARD_HTML
 
 # Configure structured logging
 logging.basicConfig(
@@ -117,18 +119,23 @@ app.include_router(analytics_router, prefix=settings.API_PREFIX)
 app.include_router(chaos_router, prefix=settings.API_PREFIX)
 
 
-@app.get("/", tags=["General"])
-async def root():
-    return {
-        "service": settings.APP_NAME,
-        "version": __version__,
-        "documentation": "/docs",
-        "health": "/healthz",
-        "readiness": "/readyz",
-        "metrics": "/metrics",
-        "api_v1": {
-            "requisitions": f"{settings.API_PREFIX}/requisitions",
-            "analytics": f"{settings.API_PREFIX}/analytics/spend",
-            "chaos": f"{settings.API_PREFIX}/chaos/status",
-        },
-    }
+@app.get("/", tags=["General"], response_class=HTMLResponse)
+async def root(request: Request):
+    accept = request.headers.get("accept", "")
+    if "application/json" in accept and "text/html" not in accept:
+        return JSONResponse(
+            content={
+                "service": settings.APP_NAME,
+                "version": __version__,
+                "documentation": "/docs",
+                "health": "/healthz",
+                "readiness": "/readyz",
+                "metrics": "/metrics",
+                "api_v1": {
+                    "requisitions": f"{settings.API_PREFIX}/requisitions",
+                    "analytics": f"{settings.API_PREFIX}/analytics/spend",
+                    "chaos": f"{settings.API_PREFIX}/chaos/status",
+                },
+            }
+        )
+    return HTMLResponse(content=DASHBOARD_HTML)
