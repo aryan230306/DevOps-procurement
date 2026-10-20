@@ -1,0 +1,12 @@
+apiVersion: 1
+
+providers:
+  - name: "Zycus SRE Dashboards"
+    orgId: 1
+    folder: "Procurement SRE"
+    type: file
+    disableDeletion: true
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/dashboards

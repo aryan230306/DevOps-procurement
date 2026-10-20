@@ -1,0 +1,57 @@
+groups:
+  - name: procurepulse_slo_recording_rules
+    interval: 5s
+    rules:
+      # -----------------------------------------------------
+      # Request Rates (RED Metric: Rate)
+      # -----------------------------------------------------
+      - record: job:http_requests:rate5m
+        expr: sum(rate(http_requests_total[5m]))
+
+      - record: job:http_requests:rate30m
+        expr: sum(rate(http_requests_total[30m]))
+
+      - record: job:http_requests:rate1h
+        expr: sum(rate(http_requests_total[1h]))
+
+      - record: job:http_requests:rate6h
+        expr: sum(rate(http_requests_total[6h]))
+
+      # -----------------------------------------------------
+      # Error Rates (RED Metric: Errors, HTTP 5xx)
+      # -----------------------------------------------------
+      - record: job:http_errors:rate5m
+        expr: sum(rate(http_requests_total{status_code=~"5.."}[5m])) or vector(0)
+
+      - record: job:http_errors:rate30m
+        expr: sum(rate(http_requests_total{status_code=~"5.."}[30m])) or vector(0)
+
+      - record: job:http_errors:rate1h
+        expr: sum(rate(http_requests_total{status_code=~"5.."}[1h])) or vector(0)
+
+      - record: job:http_errors:rate6h
+        expr: sum(rate(http_requests_total{status_code=~"5.."}[6h])) or vector(0)
+
+      # -----------------------------------------------------
+      # Error Ratio (Burn Rate Inputs: errors / total)
+      # -----------------------------------------------------
+      - record: job:http_error_ratio:rate5m
+        expr: job:http_errors:rate5m / (job:http_requests:rate5m > 0) or vector(0)
+
+      - record: job:http_error_ratio:rate30m
+        expr: job:http_errors:rate30m / (job:http_requests:rate30m > 0) or vector(0)
+
+      - record: job:http_error_ratio:rate1h
+        expr: job:http_errors:rate1h / (job:http_requests:rate1h > 0) or vector(0)
+
+      - record: job:http_error_ratio:rate6h
+        expr: job:http_errors:rate6h / (job:http_requests:rate6h > 0) or vector(0)
+
+      # -----------------------------------------------------
+      # Latency Percentiles (RED Metric: Duration)
+      # -----------------------------------------------------
+      - record: job:http_request_duration_seconds:p95
+        expr: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))
+
+      - record: job:http_request_duration_seconds:p99
+        expr: histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))

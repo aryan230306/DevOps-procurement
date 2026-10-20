@@ -1,0 +1,35 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  group_by: ['alertname', 'service', 'severity']
+  group_wait: 10s
+  group_interval: 30s
+  repeat_interval: 2h
+  receiver: "alert_sink_webhook"
+  routes:
+    - match:
+        severity: page
+      receiver: "alert_sink_webhook"
+      group_wait: 5s
+      repeat_interval: 30m
+    - match:
+        severity: warning
+      receiver: "alert_sink_webhook"
+      group_wait: 20s
+      repeat_interval: 2h
+
+inhibit_rules:
+  # Inhibit warning burn rate if critical page burn rate is already firing
+  - source_match:
+      severity: 'page'
+    target_match:
+      severity: 'warning'
+    equal: ['service', 'slo']
+
+receivers:
+  - name: "alert_sink_webhook"
+    webhook_configs:
+      - url: "http://alert-sink:9999/webhook"
+        send_resolved: true
+        max_alerts: 10

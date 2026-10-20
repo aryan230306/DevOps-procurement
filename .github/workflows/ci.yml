@@ -1,0 +1,76 @@
+name: Zycus ProcurePulse CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  # ============================================================================
+  # 1. Code Quality, Linting & Unit Testing
+  # ============================================================================
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt -r requirements-dev.txt
+
+      - name: Lint with Ruff
+        run: |
+          ruff check .
+
+      - name: Code Formatting Check with Black
+        run: |
+          black --check .
+
+      - name: Run Test Suite with Pytest & Coverage
+        run: |
+          pytest --cov=app --cov-report=term --cov-report=xml
+
+  # ============================================================================
+  # 2. Config Validation & Container Security Scanning
+  # ============================================================================
+  build-and-scan:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Validate Docker Compose Configuration
+        run: |
+          cp .env.example .env
+          docker compose config
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Container Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: false
+          tags: zycus/procurepulse:test
+          load: true
+
+      - name: Scan Image for Vulnerabilities with Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'zycus/procurepulse:test'
+          format: 'table'
+          exit-code: '0'
+          ignore-unfixed: true
+          severity: 'CRITICAL,HIGH'

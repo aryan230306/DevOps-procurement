@@ -1,0 +1,99 @@
+groups:
+  - name: procurepulse_slo_alerts
+    rules:
+      # -----------------------------------------------------
+      # 1. Page Alert: Critical SLO Multi-Burn-Rate (14.4x)
+      # Consumes 2% of 30-day error budget in 1 hour.
+      # Requires both 1-hour window AND 5-minute window to be burning.
+      # -----------------------------------------------------
+      - alert: ProcurePulseErrorBudgetBurnRateCritical
+        expr: |
+          (job:http_error_ratio:rate1h > (14.4 * (1 - 0.999)))
+          and
+          (job:http_error_ratio:rate5m > (14.4 * (1 - 0.999)))
+        for: 1m
+        labels:
+          severity: page
+          service: procurepulse
+          slo: availability
+        annotations:
+          summary: "CRITICAL: ProcurePulse 14.4x Error Budget Burn Rate Detected"
+          description: "High error rate is consuming 2% of the monthly error budget in 1 hour. 1h ratio: {{ $value }}, 5m ratio active."
+          runbook_url: "https://github.com/aryan/zycrus/blob/main/runbooks/HighErrorRateSLOBurn.md"
+
+      # -----------------------------------------------------
+      # 2. Ticket Alert: Warning SLO Multi-Burn-Rate (6x)
+      # Consumes 5% of 30-day error budget in 6 hours.
+      # Requires both 6-hour window AND 30-minute window to be burning.
+      # -----------------------------------------------------
+      - alert: ProcurePulseErrorBudgetBurnRateWarning
+        expr: |
+          (job:http_error_ratio:rate6h > (6 * (1 - 0.999)))
+          and
+          (job:http_error_ratio:rate30m > (6 * (1 - 0.999)))
+        for: 2m
+        labels:
+          severity: warning
+          service: procurepulse
+          slo: availability
+        annotations:
+          summary: "WARNING: ProcurePulse 6x Error Budget Burn Rate Detected"
+          description: "Sustained error rate is consuming 5% of monthly error budget over 6 hours."
+          runbook_url: "https://github.com/aryan/zycrus/blob/main/runbooks/HighErrorRateSLOBurn.md"
+
+      # -----------------------------------------------------
+      # 3. Latency SLO Alert (p95 > 300ms)
+      # -----------------------------------------------------
+      - alert: ProcurePulseHighLatencyP95
+        expr: job:http_request_duration_seconds:p95 > 0.300
+        for: 1m
+        labels:
+          severity: warning
+          service: procurepulse
+          slo: latency
+        annotations:
+          summary: "ProcurePulse p95 Latency SLO Breached (>300ms)"
+          description: "95th percentile response time is currently {{ $value | printf \"%.3f\" }}s, breaching the 300ms SLO target."
+          runbook_url: "https://github.com/aryan/zycrus/blob/main/runbooks/HighLatencyDegradation.md"
+
+      # -----------------------------------------------------
+      # 4. Database Connection Errors & Saturation
+      # -----------------------------------------------------
+      - alert: ProcurePulseDatabaseErrors
+        expr: rate(db_connection_errors_total[2m]) > 0
+        for: 30s
+        labels:
+          severity: page
+          service: procurepulse
+          component: postgresql
+        annotations:
+          summary: "ProcurePulse Database Connection Drop Detected"
+          description: "Database connection errors or timeouts detected at {{ $value }} errors/sec."
+          runbook_url: "https://github.com/aryan/zycrus/blob/main/runbooks/DatabaseConnectionExhausted.md"
+
+      # -----------------------------------------------------
+      # 5. Synthetic Blackbox Probe Failure
+      # -----------------------------------------------------
+      - alert: ProcurePulseSyntheticProbeFailed
+        expr: probe_success == 0
+        for: 30s
+        labels:
+          severity: page
+          service: blackbox
+        annotations:
+          summary: "Blackbox Synthetic HTTP Probe Failed"
+          description: "Target probe {{ $labels.instance }} failed to return HTTP 2xx."
+          runbook_url: "https://github.com/aryan/zycrus/blob/main/runbooks/HighErrorRateSLOBurn.md"
+
+      # -----------------------------------------------------
+      # 6. Chaos Game Day Experiment Active Flag
+      # -----------------------------------------------------
+      - alert: ProcurePulseChaosExperimentActive
+        expr: sum(chaos_active_flag) > 0
+        for: 10s
+        labels:
+          severity: info
+          service: chaos-engine
+        annotations:
+          summary: "Chaos Engineering Game Day in Progress"
+          description: "One or more synthetic chaos faults are actively injected into the runtime."
