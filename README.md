@@ -86,6 +86,14 @@ make run
 ```
 API will be live at `http://localhost:8000` with Swagger docs at `http://localhost:8000/docs`.
 
+### Render Deployment
+
+The repository includes `render.yaml`, which provisions a PostgreSQL database and
+wires its connection string into the web service. Deploy the repository as a
+Render Blueprint and set `CORS_ALLOWED_ORIGINS` plus any browser-facing
+monitoring URLs in the service environment. Production refuses to start with
+the local SQLite fallback.
+
 ---
 
 ## 🎯 Service Level Objectives (SLOs) & Alerting Math

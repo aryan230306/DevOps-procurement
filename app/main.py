@@ -14,7 +14,7 @@ from app.api.analytics import router as analytics_router
 from app.api.chaos import router as chaos_router
 from app.api.health import router as health_router
 from app.api.requisitions import router as requisitions_router
-from app.config import settings
+from app.config import settings, validate_database_configuration
 from app.database import init_db
 from app.metrics import (
     HTTP_REQUEST_DURATION_SECONDS,
@@ -36,6 +36,7 @@ logger = logging.getLogger("procurepulse")
 async def lifespan(app: FastAPI):
     """Handles startup and shutdown lifecycle events."""
     logger.info(f"Starting {settings.APP_NAME} v{__version__} ({settings.APP_ENV})...")
+    validate_database_configuration()
     try:
         await init_db()
         logger.info("Database connectivity established.")

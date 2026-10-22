@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: procurepulse
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /healthz
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: CHAOS_ENABLED
+        value: "true"
+      - key: METRICS_ENABLED
+        value: "true"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: procurepulse-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: CHAOS_CONTROL_TOKEN
+        generateValue: true
+
+databases:
+  - name: procurepulse-db
+    plan: free

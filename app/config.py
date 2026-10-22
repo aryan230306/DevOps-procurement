@@ -51,3 +51,10 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+
+def validate_database_configuration() -> None:
+    if settings.APP_ENV == "production" and settings.DATABASE_URL.startswith("sqlite"):
+        raise RuntimeError(
+            "DATABASE_URL must point to PostgreSQL in production; refusing SQLite fallback."
+        )
