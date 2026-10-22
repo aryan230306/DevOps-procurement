@@ -34,7 +34,9 @@ async def get_spend_analytics(db: AsyncSession = Depends(get_db)):
 
     # Status breakdown
     status_stats = await db.execute(
-        select(Requisition.status, func.count(Requisition.id)).group_by(Requisition.status)
+        select(Requisition.status, func.count(Requisition.id)).group_by(
+            Requisition.status
+        )
     )
     status_map = {st.value: 0 for st in RequisitionStatus}
     for row in status_stats.all():

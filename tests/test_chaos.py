@@ -18,6 +18,28 @@ async def test_chaos_status_and_reset(client: AsyncClient):
 
 
 @pytest.mark.asyncio
+async def test_production_chaos_mutations_require_control_token(client: AsyncClient, monkeypatch):
+    from app.config import settings
+
+    monkeypatch.setattr(settings, "APP_ENV", "production")
+    monkeypatch.setattr(settings, "CHAOS_CONTROL_TOKEN", "test-token")
+
+    denied = await client.post(
+        "/api/v1/chaos/error",
+        json={"probability": 1.0, "status_code": 500},
+    )
+    assert denied.status_code == 403
+
+    allowed = await client.post(
+        "/api/v1/chaos/error",
+        headers={"X-Chaos-Token": "test-token"},
+        json={"probability": 1.0, "status_code": 500},
+    )
+    assert allowed.status_code == 200
+    await client.post("/api/v1/chaos/reset", headers={"X-Chaos-Token": "test-token"})
+
+
+@pytest.mark.asyncio
 async def test_chaos_error_injection(client: AsyncClient):
     # Arm error spike: 100% chance of HTTP 500
     arm_res = await client.post(
@@ -57,6 +79,7 @@ async def test_chaos_db_offline_affects_readiness(client: AsyncClient):
     readiness = await client.get("/readyz")
     assert readiness.status_code == 503
     assert readiness.json()["ready"] is False
+    assert readiness.json()["database"]["latency_ms"] is None
 
     # Disarm
     await client.post("/api/v1/chaos/db-offline?offline=false")

@@ -157,4 +157,25 @@ async def test_spend_analytics_endpoint(client: AsyncClient):
     analytics_data = analytics_res.json()
     assert analytics_data["total_requisition_count"] >= 1
     assert analytics_data["total_spend_usd"] >= 5000.0
-    assert any(d["department"] == "IT Operations" for d in analytics_data["department_spend"])
+    assert any(
+        d["department"] == "IT Operations" for d in analytics_data["department_spend"]
+    )
+
+
+def test_dashboard_does_not_emit_unreachable_monitoring_links():
+    from app.main import _dashboard_html
+
+    dashboard = _dashboard_html()
+
+    assert "http://localhost:3000" not in dashboard
+    assert "http://localhost:9090" not in dashboard
+    assert "http://localhost:9093" not in dashboard
+    assert "http://localhost:9999" not in dashboard
+
+
+def test_dashboard_marks_failed_requests_instead_of_leaving_loading_state():
+    from app.ui import DASHBOARD_HTML
+
+    assert "if (!resp.ok) throw new Error(`Requisitions request failed" in DASHBOARD_HTML
+    assert "Unable to load requisitions." in DASHBOARD_HTML
+    assert "UNAVAILABLE" in DASHBOARD_HTML

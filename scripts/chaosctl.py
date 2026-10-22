@@ -41,27 +41,48 @@ def main():
     subparsers.add_parser("status", help="Get current chaos status")
 
     # reset
-    subparsers.add_parser("reset", help="Disarm all chaos experiments (restore nominal)")
+    subparsers.add_parser(
+        "reset", help="Disarm all chaos experiments (restore nominal)"
+    )
 
     # latency
     latency_p = subparsers.add_parser("latency", help="Inject synthetic latency")
-    latency_p.add_argument("--delay", type=float, default=1.5, help="Delay in seconds (default: 1.5)")
-    latency_p.add_argument("--prob", type=float, default=1.0, help="Probability 0.0-1.0 (default: 1.0)")
+    latency_p.add_argument(
+        "--delay", type=float, default=1.5, help="Delay in seconds (default: 1.5)"
+    )
+    latency_p.add_argument(
+        "--prob", type=float, default=1.0, help="Probability 0.0-1.0 (default: 1.0)"
+    )
 
     # error
     error_p = subparsers.add_parser("error", help="Inject HTTP 500 error bursts")
-    error_p.add_argument("--prob", type=float, default=0.5, help="Error probability 0.0-1.0 (default: 0.5)")
-    error_p.add_argument("--code", type=int, default=500, help="HTTP status code (default: 500)")
-    error_p.add_argument("--msg", default="Chaos Injected: Critical Downstream Failure", help="Error message")
+    error_p.add_argument(
+        "--prob",
+        type=float,
+        default=0.5,
+        help="Error probability 0.0-1.0 (default: 0.5)",
+    )
+    error_p.add_argument(
+        "--code", type=int, default=500, help="HTTP status code (default: 500)"
+    )
+    error_p.add_argument(
+        "--msg",
+        default="Chaos Injected: Critical Downstream Failure",
+        help="Error message",
+    )
 
     # db
     db_p = subparsers.add_parser("db", help="Simulate database outage")
     db_p.add_argument("--offline", action="store_true", help="Take database offline")
-    db_p.add_argument("--online", action="store_true", help="Restore database connection")
+    db_p.add_argument(
+        "--online", action="store_true", help="Restore database connection"
+    )
 
     # memory
     mem_p = subparsers.add_parser("leak", help="Simulate memory leak")
-    mem_p.add_argument("--mb", type=int, default=50, help="Megabytes to allocate (default: 50)")
+    mem_p.add_argument(
+        "--mb", type=int, default=50, help="Megabytes to allocate (default: 50)"
+    )
 
     args = parser.parse_args()
 
@@ -79,20 +100,28 @@ def main():
         print(f"[✓] Latency armed: {args.delay}s (prob: {args.prob})")
 
     elif args.command == "error":
-        payload = {"probability": args.prob, "status_code": args.code, "message": args.msg}
+        payload = {
+            "probability": args.prob,
+            "status_code": args.code,
+            "message": args.msg,
+        }
         res = send_request(args.url, "POST", "/api/v1/chaos/error", payload)
         print(f"[✓] Error burst armed: status {args.code} (prob: {args.prob})")
 
     elif args.command == "db":
         offline = True if args.offline else (False if args.online else True)
-        res = send_request(args.url, "POST", f"/api/v1/chaos/db-offline?offline={str(offline).lower()}")
+        res = send_request(
+            args.url, "POST", f"/api/v1/chaos/db-offline?offline={str(offline).lower()}"
+        )
         status_str = "OFFLINE" if offline else "ONLINE"
         print(f"[✓] Database connection simulation set to: {status_str}")
 
     elif args.command == "leak":
         payload = {"megabytes": args.mb}
         res = send_request(args.url, "POST", "/api/v1/chaos/memory-leak", payload)
-        print(f"[✓] Allocated {args.mb}MB. Total leak buffer: {res.get('total_leaked_mb')}MB")
+        print(
+            f"[✓] Allocated {args.mb}MB. Total leak buffer: {res.get('total_leaked_mb')}MB"
+        )
 
 
 if __name__ == "__main__":

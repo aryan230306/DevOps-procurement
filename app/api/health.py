@@ -43,7 +43,7 @@ async def readiness_probe(response: Response):
             status="DEGRADED",
             database=DatabaseHealthDetail(
                 connected=False,
-                latency_ms=0.0,
+                latency_ms=None,
                 message="Chaos Injected: Database offline",
             ),
             timestamp=datetime.now(timezone.utc),

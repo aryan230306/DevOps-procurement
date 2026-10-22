@@ -9,8 +9,22 @@ import urllib.error
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 
-DEPARTMENTS = ["Engineering", "Finance", "Legal", "Procurement", "Sales", "Operations", "Marketing"]
-CATEGORIES = ["Software Licenses", "Cloud Infrastructure", "Hardware", "Consulting", "Office Supplies"]
+DEPARTMENTS = [
+    "Engineering",
+    "Finance",
+    "Legal",
+    "Procurement",
+    "Sales",
+    "Operations",
+    "Marketing",
+]
+CATEGORIES = [
+    "Software Licenses",
+    "Cloud Infrastructure",
+    "Hardware",
+    "Consulting",
+    "Office Supplies",
+]
 SUPPLIERS = [
     "Amazon Web Services",
     "Microsoft Azure",
@@ -76,7 +90,9 @@ def simulate_procurement_user(base_url: str):
             "priority": random.choice(["LOW", "MEDIUM", "HIGH", "URGENT"]),
             "line_items": items,
         }
-        status, body, elapsed = send_http("POST", f"{base_url}/api/v1/requisitions/", payload)
+        status, body, elapsed = send_http(
+            "POST", f"{base_url}/api/v1/requisitions/", payload
+        )
 
         if status == 201:
             req_data = json.loads(body)
@@ -112,13 +128,21 @@ def simulate_procurement_user(base_url: str):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="ProcurePulse Realistic Load Generator")
+    parser = argparse.ArgumentParser(
+        description="ProcurePulse Realistic Load Generator"
+    )
     parser.add_argument("--url", default="http://localhost:8000", help="Target API URL")
-    parser.add_argument("--concurrency", type=int, default=5, help="Concurrent client workers")
-    parser.add_argument("--duration", type=int, default=0, help="Run duration in seconds (0 = infinite)")
+    parser.add_argument(
+        "--concurrency", type=int, default=5, help="Concurrent client workers"
+    )
+    parser.add_argument(
+        "--duration", type=int, default=0, help="Run duration in seconds (0 = infinite)"
+    )
     args = parser.parse_args()
 
-    print(f"[*] Starting LoadGen against {args.url} (Concurrency: {args.concurrency}, Duration: {args.duration or 'infinite'}s)")
+    print(
+        f"[*] Starting LoadGen against {args.url} (Concurrency: {args.concurrency}, Duration: {args.duration or 'infinite'}s)"
+    )
     start_time = time.time()
     last_report_time = start_time
     last_requests = 0
@@ -129,7 +153,10 @@ def main():
                 if args.duration > 0 and (time.time() - start_time) > args.duration:
                     break
 
-                futures = [executor.submit(simulate_procurement_user, args.url) for _ in range(args.concurrency)]
+                futures = [
+                    executor.submit(simulate_procurement_user, args.url)
+                    for _ in range(args.concurrency)
+                ]
                 for f in futures:
                     f.result()
 
@@ -139,7 +166,9 @@ def main():
                     delta_t = now - last_report_time
                     delta_req = STATS["requests"] - last_requests
                     rps = delta_req / delta_t
-                    avg_lat_ms = (STATS["total_time"] / max(1, STATS["requests"])) * 1000.0
+                    avg_lat_ms = (
+                        STATS["total_time"] / max(1, STATS["requests"])
+                    ) * 1000.0
 
                     print(
                         f"[{time.strftime('%H:%M:%S')}] Rate: {rps:.1f} rps | "
@@ -155,7 +184,9 @@ def main():
         except KeyboardInterrupt:
             print("\n[*] Load generation stopped by user.")
 
-    print(f"\n[SUMMARY] Total Requests: {STATS['requests']} | Success (2xx): {STATS['success']} | Errors (5xx): {STATS['server_errors']}")
+    print(
+        f"\n[SUMMARY] Total Requests: {STATS['requests']} | Success (2xx): {STATS['success']} | Errors (5xx): {STATS['server_errors']}"
+    )
 
 
 if __name__ == "__main__":

@@ -23,8 +23,10 @@ TestAsyncSession = async_sessionmaker(
 
 
 @pytest_asyncio.fixture(scope="function", autouse=True)
-async def setup_test_db():
+async def setup_test_db(monkeypatch):
     """Initializes in-memory database schema before each test and drops it after."""
+    monkeypatch.setattr("app.config.settings.APP_ENV", "development")
+    monkeypatch.setattr("app.config.settings.CHAOS_CONTROL_TOKEN", None)
     # Ensure chaos engine is reset before each test
     chaos_engine.reset()
 
@@ -46,6 +48,7 @@ async def db_session() -> AsyncGenerator[AsyncSession, None]:
 @pytest_asyncio.fixture
 async def client() -> AsyncGenerator[AsyncClient, None]:
     """Provides an asynchronous HTTP test client bound to the FastAPI app."""
+
     async def override_get_db():
         async with TestAsyncSession() as session:
             yield session

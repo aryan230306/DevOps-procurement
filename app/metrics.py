@@ -26,8 +26,22 @@ HTTP_REQUEST_DURATION_SECONDS = Histogram(
     "Latency distribution of HTTP requests in seconds.",
     ["method", "endpoint"],
     buckets=[
-        0.005, 0.01, 0.025, 0.05, 0.075, 0.1,
-        0.15, 0.2, 0.25, 0.3, 0.5, 0.75, 1.0, 2.5, 5.0, 10.0
+        0.005,
+        0.01,
+        0.025,
+        0.05,
+        0.075,
+        0.1,
+        0.15,
+        0.2,
+        0.25,
+        0.3,
+        0.5,
+        0.75,
+        1.0,
+        2.5,
+        5.0,
+        10.0,
     ],
 )
 

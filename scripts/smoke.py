@@ -53,7 +53,9 @@ def main():
     assert status == 201, f"Create requisition failed: {status}"
     data = json.loads(body)
     req_id = data["id"]
-    print(f"  [✓] Created requisition #{req_id} ({data['req_number']}) - Total: ${data['total_amount']}")
+    print(
+        f"  [✓] Created requisition #{req_id} ({data['req_number']}) - Total: ${data['total_amount']}"
+    )
 
     # 4. Submit requisition
     status, body = request("POST", f"/api/v1/requisitions/{req_id}/submit")
@@ -67,7 +69,9 @@ def main():
         "decision": "APPROVED",
         "comments": "Approved via automated smoke verification.",
     }
-    status, body = request("POST", f"/api/v1/requisitions/{req_id}/approve", approval_payload)
+    status, body = request(
+        "POST", f"/api/v1/requisitions/{req_id}/approve", approval_payload
+    )
     assert status == 200, f"Approval failed: {status}"
     print(f"  [✓] Approved requisition #{req_id}")
 

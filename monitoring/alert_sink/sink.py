@@ -53,9 +53,7 @@ class AlertSinkHandler(BaseHTTPRequestHandler):
                     summary = annotations.get("summary", "No summary")
                     description = annotations.get("description", "No description")
 
-                    log_msg = (
-                        f"[{severity.upper()}] {alert_name} -> {summary} | {description}"
-                    )
+                    log_msg = f"[{severity.upper()}] {alert_name} -> {summary} | {description}"
                     logger.warning(log_msg)
 
                     RECEIVED_ALERTS.append(

@@ -51,7 +51,9 @@ class ChaosEngine:
         """Injects synthetic latency into API endpoints."""
         self._latency_delay = max(0.0, delay_seconds)
         self._latency_probability = max(0.0, min(1.0, probability))
-        is_active = 1 if self._latency_delay > 0 and self._latency_probability > 0 else 0
+        is_active = (
+            1 if self._latency_delay > 0 and self._latency_probability > 0 else 0
+        )
         CHAOS_ACTIVE_FLAG.labels(fault_type="latency").set(is_active)
         logger.warning(
             f"Chaos Armed: Latency injection {self._latency_delay}s (prob: {self._latency_probability})"
@@ -86,7 +88,9 @@ class ChaosEngine:
         CHAOS_FAULTS_INJECTED_TOTAL.labels(fault_type="memory_leak").inc()
         CHAOS_ACTIVE_FLAG.labels(fault_type="memory_leak").set(1)
         total_mb = sum(len(c) for c in self._leak_buffer) // (1024 * 1024)
-        logger.warning(f"Chaos Triggered: Allocated {megabytes}MB (Total leak: {total_mb}MB)")
+        logger.warning(
+            f"Chaos Triggered: Allocated {megabytes}MB (Total leak: {total_mb}MB)"
+        )
         return total_mb
 
     async def maybe_inject_latency(self) -> None:

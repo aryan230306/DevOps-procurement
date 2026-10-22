@@ -42,7 +42,9 @@ def _generate_req_number() -> str:
 async def _sync_state_metrics(db: AsyncSession) -> None:
     """Updates Prometheus gauges for each requisition state."""
     state_counts = await db.execute(
-        select(Requisition.status, func.count(Requisition.id)).group_by(Requisition.status)
+        select(Requisition.status, func.count(Requisition.id)).group_by(
+            Requisition.status
+        )
     )
     for st in RequisitionStatus:
         REQUISITIONS_BY_STATE.labels(state=st.value).set(0)
@@ -133,7 +135,9 @@ async def create_requisition(
 )
 async def list_requisitions(
     department: str | None = Query(None, description="Filter by department"),
-    req_status: RequisitionStatus | None = Query(None, alias="status", description="Filter by status"),
+    req_status: RequisitionStatus | None = Query(
+        None, alias="status", description="Filter by status"
+    ),
     skip: int = Query(0, ge=0),
     limit: int = Query(50, ge=1, le=100),
     db: AsyncSession = Depends(get_db),
@@ -142,7 +146,12 @@ async def list_requisitions(
     chaos_engine.maybe_inject_error()
     chaos_engine.check_db_interception()
 
-    stmt = select(Requisition).order_by(desc(Requisition.created_at)).offset(skip).limit(limit)
+    stmt = (
+        select(Requisition)
+        .order_by(desc(Requisition.created_at))
+        .offset(skip)
+        .limit(limit)
+    )
 
     if department:
         stmt = stmt.where(Requisition.department == department)
@@ -307,4 +316,3 @@ async def delete_requisition(
     await db.delete(requisition)
     await db.commit()
     await _sync_state_metrics(db)
-

@@ -68,10 +68,16 @@ class Requisition(Base):
     )
 
     line_items = relationship(
-        "LineItem", back_populates="requisition", cascade="all, delete-orphan", lazy="selectin"
+        "LineItem",
+        back_populates="requisition",
+        cascade="all, delete-orphan",
+        lazy="selectin",
     )
     approvals = relationship(
-        "ApprovalLog", back_populates="requisition", cascade="all, delete-orphan", lazy="selectin"
+        "ApprovalLog",
+        back_populates="requisition",
+        cascade="all, delete-orphan",
+        lazy="selectin",
     )
 
 
@@ -79,7 +85,9 @@ class LineItem(Base):
     __tablename__ = "line_items"
 
     id = Column(Integer, primary_key=True, index=True)
-    requisition_id = Column(Integer, ForeignKey("requisitions.id", ondelete="CASCADE"), nullable=False)
+    requisition_id = Column(
+        Integer, ForeignKey("requisitions.id", ondelete="CASCADE"), nullable=False
+    )
     item_description = Column(String(255), nullable=False)
     category = Column(String(64), nullable=False)
     quantity = Column(Integer, default=1, nullable=False)
@@ -94,7 +102,9 @@ class ApprovalLog(Base):
     __tablename__ = "approval_logs"
 
     id = Column(Integer, primary_key=True, index=True)
-    requisition_id = Column(Integer, ForeignKey("requisitions.id", ondelete="CASCADE"), nullable=False)
+    requisition_id = Column(
+        Integer, ForeignKey("requisitions.id", ondelete="CASCADE"), nullable=False
+    )
     approver_name = Column(String(128), nullable=False)
     approver_role = Column(String(64), nullable=False)
     decision = Column(String(32), nullable=False)  # APPROVED or REJECTED

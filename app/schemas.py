@@ -119,7 +119,7 @@ class HealthResponse(BaseModel):
 
 class DatabaseHealthDetail(BaseModel):
     connected: bool
-    latency_ms: float
+    latency_ms: float | None
     message: str
 
 

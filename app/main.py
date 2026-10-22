@@ -3,6 +3,7 @@
 import logging
 import time
 from contextlib import asynccontextmanager
+from typing import Optional
 
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
@@ -56,8 +57,12 @@ app = FastAPI(
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
+    allow_origins=[
+        origin.strip()
+        for origin in settings.CORS_ALLOWED_ORIGINS.split(",")
+        if origin.strip()
+    ],
+    allow_credentials=bool(settings.CORS_ALLOWED_ORIGINS.strip()),
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -74,7 +79,13 @@ async def prometheus_metrics_middleware(request: Request, call_next):
     # Normalize parameterized routes to prevent cardinality explosion in Prometheus
     # e.g., /api/v1/requisitions/123 -> /api/v1/requisitions/{id}
     parts = endpoint.split("/")
-    if len(parts) >= 5 and parts[1] == "api" and parts[2] == "v1" and parts[3] == "requisitions" and parts[4].isdigit():
+    if (
+        len(parts) >= 5
+        and parts[1] == "api"
+        and parts[2] == "v1"
+        and parts[3] == "requisitions"
+        and parts[4].isdigit()
+    ):
         parts[4] = "{id}"
         endpoint = "/".join(parts)
 
@@ -90,8 +101,12 @@ async def prometheus_metrics_middleware(request: Request, call_next):
     finally:
         duration = time.perf_counter() - start_time
         HTTP_REQUESTS_IN_FLIGHT.dec()
-        HTTP_REQUEST_DURATION_SECONDS.labels(method=method, endpoint=endpoint).observe(duration)
-        HTTP_REQUESTS_TOTAL.labels(method=method, endpoint=endpoint, status_code=status_code).inc()
+        HTTP_REQUEST_DURATION_SECONDS.labels(method=method, endpoint=endpoint).observe(
+            duration
+        )
+        HTTP_REQUESTS_TOTAL.labels(
+            method=method, endpoint=endpoint, status_code=status_code
+        ).inc()
 
     return response
 
@@ -119,6 +134,25 @@ app.include_router(analytics_router, prefix=settings.API_PREFIX)
 app.include_router(chaos_router, prefix=settings.API_PREFIX)
 
 
+def _monitoring_link(url: Optional[str], label: str, icon: str, suffix: str = "") -> str:
+    if not url:
+        return ""
+    return f'<a href="{url.rstrip("/")}{suffix}" target="_blank" rel="noopener" class="nav-btn">{icon} {label}</a>'
+
+
+def _dashboard_html() -> str:
+    replacements = {
+        "__GRAFANA_LINK__": _monitoring_link(settings.GRAFANA_URL, "Grafana", "📊"),
+        "__PROMETHEUS_LINK__": _monitoring_link(settings.PROMETHEUS_URL, "Prometheus", "🔥"),
+        "__ALERTMANAGER_LINK__": _monitoring_link(settings.ALERTMANAGER_URL, "Alertmanager", "🔔"),
+        "__ALERT_SINK_LINK__": _monitoring_link(settings.ALERT_SINK_URL, "Alert Sink", "📥", "/alerts"),
+    }
+    dashboard = DASHBOARD_HTML
+    for placeholder, link in replacements.items():
+        dashboard = dashboard.replace(placeholder, link)
+    return dashboard
+
+
 @app.get("/", tags=["General"], response_class=HTMLResponse)
 async def root(request: Request):
     accept = request.headers.get("accept", "")
@@ -138,4 +172,4 @@ async def root(request: Request):
                 },
             }
         )
-    return HTMLResponse(content=DASHBOARD_HTML)
+    return HTMLResponse(content=_dashboard_html())

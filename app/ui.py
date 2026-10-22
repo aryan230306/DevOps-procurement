@@ -417,10 +417,10 @@ DASHBOARD_HTML = """<!DOCTYPE html>
     </div>
     <div class="nav-links">
       <a href="/docs" target="_blank" class="nav-btn">📖 Swagger API</a>
-      <a href="http://localhost:3000" target="_blank" class="nav-btn">📊 Grafana</a>
-      <a href="http://localhost:9090" target="_blank" class="nav-btn">🔥 Prometheus</a>
-      <a href="http://localhost:9093" target="_blank" class="nav-btn">🔔 Alertmanager</a>
-      <a href="http://localhost:9999/alerts" target="_blank" class="nav-btn">📥 Alert Sink</a>
+      __GRAFANA_LINK__
+      __PROMETHEUS_LINK__
+      __ALERTMANAGER_LINK__
+      __ALERT_SINK_LINK__
     </div>
   </header>
 
@@ -600,6 +600,7 @@ DASHBOARD_HTML = """<!DOCTYPE html>
     async function fetchStatus() {
       try {
         const readyResp = await fetch('/readyz');
+        if (!readyResp.ok) throw new Error(`Readiness request failed (${readyResp.status})`);
         const readyData = await readyResp.json();
 
         const dotReadiness = document.getElementById('dot-readiness');
@@ -617,6 +618,7 @@ DASHBOARD_HTML = """<!DOCTYPE html>
         }
 
         const chaosResp = await fetch('/api/v1/chaos/status');
+        if (!chaosResp.ok) throw new Error(`Chaos status request failed (${chaosResp.status})`);
         const chaosData = await chaosResp.json();
 
         let activeCount = 0;
@@ -641,30 +643,41 @@ DASHBOARD_HTML = """<!DOCTYPE html>
         document.getElementById('btn-toggle-db').innerText = isDbOffline ? 'Restore DB Connection' : 'Simulate DB Outage';
       } catch (err) {
         console.error('Status fetch error:', err);
+        document.getElementById('lbl-readiness').innerText = 'UNKNOWN';
+        document.getElementById('dot-readiness').className = 'pill-dot amber';
+        document.getElementById('kpi-db-latency').innerText = 'UNAVAILABLE';
       }
     }
 
     async function fetchAnalytics() {
       try {
         const resp = await fetch('/api/v1/analytics/spend');
-        if (!resp.ok) return;
+        if (!resp.ok) throw new Error(`Analytics request failed (${resp.status})`);
         const data = await resp.json();
         document.getElementById('kpi-spend').innerText = '$' + data.total_spend_usd.toLocaleString();
         document.getElementById('kpi-count').innerText = data.total_requisition_count;
       } catch (err) {
         console.error('Analytics fetch error:', err);
+        document.getElementById('kpi-spend').innerText = 'UNAVAILABLE';
+        document.getElementById('kpi-count').innerText = 'UNAVAILABLE';
       }
     }
 
+    function renderRequisitionMessage(message, action = '') {
+      document.getElementById('requisitions-table-body').innerHTML =
+        `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">${message}${action}</td></tr>`;
+    }
+
     async function fetchRequisitions() {
+      renderRequisitionMessage('Loading procurement requisitions...');
       try {
         const resp = await fetch('/api/v1/requisitions/?limit=20');
-        if (!resp.ok) return;
+        if (!resp.ok) throw new Error(`Requisitions request failed (${resp.status})`);
         const items = await resp.json();
         const tbody = document.getElementById('requisitions-table-body');
 
         if (items.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">No requisitions created yet. Click "+ Quick Demo PR" above!</td></tr>';
+          renderRequisitionMessage('No requisitions created yet. Click "+ Quick Demo PR" above!');
           return;
         }
 
@@ -689,6 +702,7 @@ DASHBOARD_HTML = """<!DOCTYPE html>
         }).join('');
       } catch (err) {
         console.error('Requisitions fetch error:', err);
+        renderRequisitionMessage('Unable to load requisitions. ', '<button class="btn btn-secondary" onclick="fetchRequisitions()">Retry</button>');
       }
     }
 
@@ -725,6 +739,7 @@ DASHBOARD_HTML = """<!DOCTYPE html>
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
+        if (!resp.ok) throw new Error(`Create request failed (${resp.status})`);
         const data = await resp.json();
         logToConsole(`Created Requisition ${data.req_number} ($${data.total_amount}) for ${chosenDept}`);
         showToast(`Created Requisition ${data.req_number}!`);
@@ -738,6 +753,7 @@ DASHBOARD_HTML = """<!DOCTYPE html>
     async function submitRequisition(id) {
       try {
         const resp = await fetch(`/api/v1/requisitions/${id}/submit`, { method: 'POST' });
+        if (!resp.ok) throw new Error(`Submit request failed (${resp.status})`);
         const data = await resp.json();
         logToConsole(`Submitted Requisition ${data.req_number} for manager approval`);
         showToast(`Submitted ${data.req_number}!`);
@@ -759,6 +775,7 @@ DASHBOARD_HTML = """<!DOCTYPE html>
             comments: 'Approved via SRE Mission Control UI'
           })
         });
+        if (!resp.ok) throw new Error(`Approval request failed (${resp.status})`);
         const data = await resp.json();
         logToConsole(`Approved Requisition ${data.req_number}`);
         showToast(`Approved ${data.req_number}!`);
@@ -771,11 +788,12 @@ DASHBOARD_HTML = """<!DOCTYPE html>
 
     async function armErrorChaos() {
       const pct = parseInt(document.getElementById('rng-error').value, 10) / 100.0;
-      await fetch('/api/v1/chaos/error', {
+      const resp = await fetch('/api/v1/chaos/error', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ probability: pct, status_code: 500 })
       });
+      if (!resp.ok) throw new Error(`Chaos error request failed (${resp.status})`);
       logToConsole(`[CHAOS] Armed HTTP 500 error spike at ${pct * 100}% probability!`);
       showToast(`Chaos Armed: ${pct * 100}% Error Burst!`, true);
       fetchStatus();
@@ -783,11 +801,12 @@ DASHBOARD_HTML = """<!DOCTYPE html>
 
     async function armLatencyChaos() {
       const delay = parseFloat(document.getElementById('rng-latency').value);
-      await fetch('/api/v1/chaos/latency', {
+      const resp = await fetch('/api/v1/chaos/latency', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ delay_seconds: delay, probability: 1.0 })
       });
+      if (!resp.ok) throw new Error(`Chaos latency request failed (${resp.status})`);
       logToConsole(`[CHAOS] Armed latency injection of ${delay}s!`);
       showToast(`Chaos Armed: ${delay}s Latency!`);
       fetchStatus();
@@ -795,14 +814,16 @@ DASHBOARD_HTML = """<!DOCTYPE html>
 
     async function toggleDbChaos() {
       const targetState = !isDbOffline;
-      await fetch(`/api/v1/chaos/db-offline?offline=${targetState}`, { method: 'POST' });
+      const resp = await fetch(`/api/v1/chaos/db-offline?offline=${targetState}`, { method: 'POST' });
+      if (!resp.ok) throw new Error(`Chaos database request failed (${resp.status})`);
       logToConsole(`[CHAOS] Set PostgreSQL Connection simulation to: ${targetState ? 'OFFLINE' : 'ONLINE'}`);
       showToast(`Database set to ${targetState ? 'OFFLINE' : 'ONLINE'}`, targetState);
       fetchStatus();
     }
 
     async function resetChaos() {
-      await fetch('/api/v1/chaos/reset', { method: 'POST' });
+      const resp = await fetch('/api/v1/chaos/reset', { method: 'POST' });
+      if (!resp.ok) throw new Error(`Chaos reset request failed (${resp.status})`);
       logToConsole(`[CHAOS] All chaos experiments disarmed. System nominal.`);
       showToast(`All chaos disarmed. System nominal!`);
       fetchStatus();
